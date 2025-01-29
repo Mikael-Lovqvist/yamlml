@@ -19,6 +19,13 @@ export declare namespace Alias {
   }
 }
 
+
+class Injected_Anchor {
+  constructor(value) {
+    this.res = value;
+  }
+}
+
 export class Alias extends NodeBase {
   source: string
 
@@ -40,6 +47,15 @@ export class Alias extends NodeBase {
    */
   resolve(doc: Document): Scalar | YAMLMap | YAMLSeq | undefined {
     let found: Scalar | YAMLMap | YAMLSeq | undefined = undefined
+
+    const injectedAnchors = doc.options.injectedAnchors;
+    if (injectedAnchors) {
+        found = injectedAnchors[this.source];
+        if (found !== undefined) {
+            return new Injected_Anchor(found);
+        }
+    }
+
     visit(doc, {
       Node: (_key: unknown, node: Node) => {
         if (node === this) return visit.BREAK
@@ -57,7 +73,14 @@ export class Alias extends NodeBase {
       const msg = `Unresolved alias (the anchor must be set before the alias): ${this.source}`
       throw new ReferenceError(msg)
     }
-    let data = anchors.get(source)
+
+    let data;
+    if (source instanceof Injected_Anchor) {
+        data = source;
+    } else {
+        data = anchors.get(source);
+    }
+
     if (!data) {
       // Resolve anchors for Node.prototype.toJS()
       toJS(source, null, ctx)
@@ -89,7 +112,7 @@ export class Alias extends NodeBase {
     const src = `*${this.source}`
     if (ctx) {
       anchorIsValid(this.source)
-      if (ctx.options.verifyAliasOrder && !ctx.anchors.has(this.source)) {
+      if (ctx.options.verifyAliasOrder && (ctx.doc.options.injectedAnchors[this.source] === undefined) && !ctx.anchors.has(this.source)) {
         const msg = `Unresolved alias (the anchor must be set before the alias): ${this.source}`
         throw new Error(msg)
       }
