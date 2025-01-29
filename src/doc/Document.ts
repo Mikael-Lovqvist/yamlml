@@ -126,7 +126,8 @@ export class Document<
         strict: true,
         stringKeys: false,
         uniqueKeys: true,
-        version: '1.2'
+        version: '1.2',
+        injectedAnchors: {},
       },
       options
     )

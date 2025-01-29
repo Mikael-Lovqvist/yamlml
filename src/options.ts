@@ -68,6 +68,8 @@ export type ParseOptions = {
    * Default: `true`
    */
   uniqueKeys?: boolean | ((a: ParsedNode, b: ParsedNode) => boolean)
+
+  injectedAnchors?: Record<string, unknown>;
 }
 
 export type DocumentOptions = {
