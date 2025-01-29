@@ -3,7 +3,7 @@
   "version": "2.7.0",
   "license": "ISC",
   "author": "Eemeli Aro <eemeli@gmail.com>",
-  "repository": "github:eemeli/yaml",
+  "repository": "github:Mikael-Lovqvist/yamlml",
   "description": "JavaScript parser and stringifier for YAML",
   "keywords": [
     "YAML",
